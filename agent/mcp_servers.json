@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "local_test_server": {
+      "url": "http://localhost:8001",
+      "headers": {}
+    },
+    "sample_external_mcp": {
+      "url": "https://mcp.firecrawl.dev/v2/mcp",
+      "headers": {
+        "Authorization": "Bearer fc-6cdfbb1dfd9d4e71a94954c0c859b851"
+      }
+    }
+  }
+}

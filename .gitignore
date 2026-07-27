@@ -1,0 +1,20 @@
+# Dependencies & Environment
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+.env.*.local
+
+# Build & Cache
+.next/
+out/
+dist/
+*.db
+sqlite.db
+sqlite.db-journal
+
+# Uploads & Temp
+project/public/uploads/*
+!project/public/uploads/.gitkeep
