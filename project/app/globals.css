@@ -4,6 +4,7 @@
 
 @layer base {
     :root {
+        color-scheme: light;
         --background: 0 0% 100%;
         --foreground: 0 0% 3.9%;
 
@@ -36,6 +37,7 @@
     }
 
     .dark {
+        color-scheme: dark;
         --background: 0 0% 3.9%;
         --foreground: 0 0% 98%;
 
@@ -72,6 +74,64 @@
     }
     body {
         @apply bg-background text-foreground;
+    }
+
+    /* Markdown Table Styling */
+    table {
+        @apply w-full text-sm text-left my-6 border-collapse;
+    }
+    
+    thead {
+        @apply border-b border-zinc-200 dark:border-zinc-700/50;
+    }
+    
+    th {
+        @apply px-4 py-3 bg-zinc-100/50 dark:bg-zinc-800/80 font-medium text-zinc-900 dark:text-zinc-200;
+        
+        &:first-child {
+            @apply rounded-tl-xl;
+        }
+        &:last-child {
+            @apply rounded-tr-xl;
+        }
+    }
+    
+    td {
+        @apply px-4 py-3 text-zinc-700 dark:text-zinc-300 border-b border-zinc-100 dark:border-zinc-800/50;
+    }
+    
+    tr {
+        @apply hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors dark:bg-transparent;
+    }
+    
+    /* Make the table wrapper overflow nicely */
+    .table-wrapper {
+        @apply w-full overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700/50 mb-6;
+    }
+
+    /* Tool Call Collapsible Styling */
+    details {
+        @apply mb-4 bg-zinc-100 dark:bg-[#2a2a2a] rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700/50;
+    }
+    
+    summary {
+        @apply cursor-pointer p-3 text-sm font-medium hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-zinc-800 dark:text-zinc-200 outline-none select-none;
+    }
+    
+    details > div {
+        @apply p-3 pt-0 text-xs font-mono text-zinc-600 dark:text-zinc-400 border-t border-black/5 dark:border-white/5 mt-1;
+    }
+    
+    details > div pre {
+        @apply max-h-64 overflow-y-auto bg-black/5 dark:bg-black/20 rounded-md p-2 my-2 whitespace-pre-wrap break-words;
+    }
+    
+    details > div strong {
+        @apply block mt-2 mb-1 opacity-70;
+    }
+    
+    details > div em {
+        @apply block mt-2 mb-1 text-blue-500 not-italic font-bold animate-pulse;
     }
 }
 

@@ -4,14 +4,20 @@ from mcp_client import RemoteMCPClient
 # Initialize MCP client instance loading from mcp_servers.json configuration
 remote_mcp_client = RemoteMCPClient()
 
+_cached_remote_tools = None
+
 async def get_all_tools() -> list:
     """Combines local tools and dynamically fetched remote MCP tools."""
+    global _cached_remote_tools
+    
     # Start with local tools
     all_tools = list(local_tools_def)
     
-    # Fetch remote tools from remote MCP server
-    remote_tools = await remote_mcp_client.fetch_remote_tools()
-    all_tools.extend(remote_tools)
+    # Fetch remote tools from remote MCP server only once
+    if _cached_remote_tools is None:
+        _cached_remote_tools = await remote_mcp_client.fetch_remote_tools()
+        
+    all_tools.extend(_cached_remote_tools)
     
     return all_tools
 

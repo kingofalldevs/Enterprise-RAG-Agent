@@ -102,12 +102,32 @@ async def openai_stream(messages: list) -> AsyncGenerator[bytes, None]:
             try:
                 t_args = json.loads(tc["function"]["arguments"])
             except Exception:
-                t_args = {}
+                t_args = tc["function"]["arguments"]
                 
-            info_msg = f"\n\n⚙️ *[Nexus Tool Call: Executing `{t_name}`]*\n\n"
-            yield f"data: {json.dumps({'id': 'tool-start', 'object': 'chat.completion.chunk', 'created': 0, 'model': 'deepseek-chat', 'choices': [{'index': 0, 'delta': {'content': info_msg, 'toolCalls': []}, 'finish_reason': None}]})}\n\n".encode()
+            t_args_str = json.dumps(t_args, indent=2) if isinstance(t_args, dict) else str(t_args)
+
+            info_msg_start = (
+                f"\n\n<details>\n"
+                f"  <summary>⚙️ Tool Call: {t_name}</summary>\n"
+                f"  <div class=\"tool-content\">\n"
+                f"    <strong>Arguments:</strong>\n"
+                f"    <pre>{t_args_str}</pre>\n"
+                f"    <em>Executing...</em>\n"
+            )
             
-            tool_res = await dispatch_tool(t_name, t_args)
+            yield f"data: {json.dumps({'id': 'tool-start', 'object': 'chat.completion.chunk', 'created': 0, 'model': 'deepseek-chat', 'choices': [{'index': 0, 'delta': {'content': info_msg_start, 'toolCalls': []}, 'finish_reason': None}]})}\n\n".encode()
+            
+            tool_res = await dispatch_tool(t_name, t_args if isinstance(t_args, dict) else {})
+            
+            info_msg_end = (
+                f"    <strong>Result:</strong>\n"
+                f"    <pre>{tool_res}</pre>\n"
+                f"  </div>\n"
+                f"</details>\n\n"
+            )
+            
+            yield f"data: {json.dumps({'id': 'tool-end', 'object': 'chat.completion.chunk', 'created': 0, 'model': 'deepseek-chat', 'choices': [{'index': 0, 'delta': {'content': info_msg_end, 'toolCalls': []}, 'finish_reason': None}]})}\n\n".encode()
+
             formatted_messages.append({
                 "tool_call_id": tc["id"],
                 "role": "tool",
